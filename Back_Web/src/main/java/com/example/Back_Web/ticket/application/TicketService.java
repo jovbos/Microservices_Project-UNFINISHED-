@@ -56,6 +56,8 @@ public class TicketService implements TicketServicePort {
 
     public ResponseEntity<TicketOutputDto> createTicket(TicketInputDto ticketInputDto, String token) {
 
+        if (ticketInputDto.getTripId() == null) throw new CustomErrorRequest400("TRIP ID MUST NOT BE NULL");
+
         // --- Se valida el token aportado y se recibe el mail del usuario loggeado ---
         try {
             new RestTemplate().getForEntity("http://localhost:8080/api/v0/token?token=" + token,
@@ -158,5 +160,33 @@ public class TicketService implements TicketServicePort {
         return ticketRepositoryImp.ticketsFilter(destination, dateFrom, dateTo, timeFrom, timeTo);
     }
 
+    public ResponseEntity<String> deleteTicketFunction(String id, String token) {
 
+        // --- Se valida el token aportado y se recibe el mail del usuario loggeado ---
+        try {
+            new RestTemplate().getForEntity("http://localhost:8080/api/v0/token?token=" + token,
+                    String.class);
+        } catch (Exception e) {
+            throw new CustomErrorRequest403("INVALID TOKEN");
+        }
+        ResponseEntity<String> responseToken =
+                new RestTemplate().getForEntity("http://localhost:8080/api/v0/token?token=" + token,
+                        String.class);
+        String emailLogged = responseToken.getBody();
+
+        if (employeeRepository.existsByEmail(emailLogged)) {
+            if (!employeeRepository.findByEmail(emailLogged).get(0).getAdmin().equals(true))
+                throw new CustomErrorRequest403("YOU NEED ADMIN RIGHTS");
+        } else if (!employeeRepository.existsByEmail(emailLogged))
+            throw new CustomErrorRequest403("YOU NEED ADMIN RIGHTS");
+
+        // --- Se borra el ticket y se comunica a back empresa ---
+        if (ticketRepository.existsById(id)) {
+            ticketRepository.deleteById(id);
+
+            String output = "The ticket with ID: " + id + " has been remove.";
+            kafkaTemplate.send("ticketTopic", "Delete ticket " + id);
+            return new ResponseEntity<>(output, HttpStatus.OK);
+        } else throw new CustomErrorRequest404("TICKET NOT FOUND");
+    }
 }

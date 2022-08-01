@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface TicketServicePort {
-    public ResponseEntity<TicketOutputDto> createTicket(TicketInputDto ticketInputDto, String token) ;
+    ResponseEntity<TicketOutputDto> createTicket(TicketInputDto ticketInputDto, String token) ;
 
     ResponseEntity<List<TicketOutputDto>> getCriteriaTickets(String destination,
                                                              LocalDate dateFrom,
@@ -18,4 +18,6 @@ public interface TicketServicePort {
                                                              Time timeTo,
                                                              String token);
 
+
+    public ResponseEntity<String> deleteTicketFunction(String id, String token);
 }

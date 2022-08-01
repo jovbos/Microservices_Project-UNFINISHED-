@@ -16,5 +16,5 @@ public interface TicketServicePort {
                                                                 LocalDate dateTo,
                                                                 Time timeFrom,
                                                                 Time timeTo);
-    ResponseEntity<String> deleteticketFunction(String id);
+    ResponseEntity<String> deleteTicketFunction(String id);
 }

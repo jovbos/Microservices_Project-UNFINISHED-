@@ -16,8 +16,9 @@ public class EmployeeController {
     EmployeeServicePort employeeServicePort;
 
     @PostMapping("/api/v0/employee")
-    public ResponseEntity<EmployeeOutputDto> createEmployee(EmployeeInputDto employeeInputDto) {
-        return employeeServicePort.createEmployeeFunction(employeeInputDto);
+    public ResponseEntity<EmployeeOutputDto> createEmployee(@RequestBody EmployeeInputDto employeeInputDto,
+                                                            @RequestHeader String token) {
+        return employeeServicePort.createEmployeeFunction(employeeInputDto, token);
     }
 
     @GetMapping("/api/v0/employee")

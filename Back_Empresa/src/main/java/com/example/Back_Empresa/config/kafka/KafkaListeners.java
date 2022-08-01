@@ -35,11 +35,20 @@ public class KafkaListeners {
     @KafkaListener(topics = "tripTopic")
     void tripListener(String tripString) {
 
-        // --- Separo cada campo del string ---
-        String[] stringList = tripString.split("\":\"|\",\"|\":|,\"|\"");
+        // --- Se comprueba si se tienen que borrar o guardar un registro ---
+        if (tripString.split("[\" ]")[1].equals("Delete")) {
+            if (tripRepository.existsById(tripString.split("[\" ]")[3]))
+            {
+                String id = tripString.split("[\" ]")[3];
+                tripRepository.deleteById(id);
+                System.out.println("Trip with ID: " + id + " has been removed.");
+            }
+        } else {
 
-        if (!tripRepository.existsById(stringList[2])) {
-            System.out.println("RECEIVED: " + tripString);
+            // --- Separo cada campo del string ---
+            String[] stringList = tripString.split("\":\"|\",\"|\":|,\"|\"");
+
+            System.out.println("RECEIVED TRIP: " + tripString);
 
             // --- Separo cada numero del string de la hora para parsearlos luego a int ---
             String time = stringList[8];
@@ -61,16 +70,26 @@ public class KafkaListeners {
                     null
             );
             tripRepository.save(trip);
+            System.out.println("REGISTERED TRIP: " + tripString);
         }
     }
 
     // --- Recibo datos de reserva y se registra ---
     @KafkaListener(topics = "ticketTopic")
     void ticketListener(String ticketString) {
-        String[] stringList = ticketString.split("\":\"|\",\"|\":|,\"|\"|}");
 
-        if (!ticketRepository.existsById(stringList[2])) {
-            System.out.println("RECEIVED: " + ticketString);
+        // --- Se comprueba si se tienen que borrar o guardar un registro ---
+        if (ticketString.split("[\" ]")[1].equals("Delete")) {
+            System.out.println(ticketString.split("[\" ]")[3]);
+            if (ticketRepository.existsById(ticketString.split("[\" ]")[3])) {
+                String id = ticketString.split("[\" ]")[3];
+                ticketRepository.deleteById(id);
+                System.out.println("Ticket with ID: " + id + " has been removed.");
+            }
+        } else {
+            String[] stringList = ticketString.split("\":\"|\",\"|\":|,\"|\"|}");
+
+            System.out.println("RECEIVED TICKET: " + ticketString);
 
             Trip trip = tripRepository.findById(stringList[6]).get();
             Client client = clientRepository.findById(stringList[4]).get();
@@ -85,6 +104,7 @@ public class KafkaListeners {
                     trip.getTime()
             );
             ticketRepository.save(ticket);
+            System.out.println("REGISTERED TICKET: " + ticketString);
         }
     }
 
@@ -92,8 +112,16 @@ public class KafkaListeners {
     // --- Recibo cliente como string y divido los datos que necesito ---
     @KafkaListener(topics = "clientTopic")
     void clientListener(String clientString) {
-        String[] stringList = clientString.split("\":\"|\",\"|\":|,\"|\"|}");
-        if (!clientRepository.existsById(stringList[2])) {
+
+        // --- Se comprueba si se tienen que borrar o guardar un registro ---
+        if (clientString.split("[\" ]")[1].equals("Delete")) {
+            if (clientRepository.existsById(clientString.split("[\" ]")[3])) {
+                String id = clientString.split("[\" ]")[3];
+                clientRepository.deleteById(id);
+                System.out.println("Client with ID: " + id + " has been removed.");
+            }
+        } else {
+            String[] stringList = clientString.split("\":\"|\",\"|\":|,\"|\"|}");
             System.out.println("RECEIVED CLIENT: " + clientString);
 
             Client client = new Client(
@@ -108,39 +136,48 @@ public class KafkaListeners {
             );
             clientRepository.save(client);
         }
-
     }
 
     @KafkaListener(topics = "employeeTopic")
     void employeeListener(String employeeString) {
-        String[] stringList = employeeString.split("\":\"|\",\"|\":|,\"|\"|}");
+
+        // --- Se comprueba si se tienen que borrar o guardar un registro ---
+        if (employeeString.split("[\" ]")[1].equals("Delete")) {
+            if (employeeRepository.existsById(employeeString.split("[\" ]")[3])) {
+                String id = employeeString.split("[\" ]")[3];
+                employeeRepository.deleteById(id);
+                System.out.println("Employee with ID: " + id + " has been removed.");
+            }
+        } else {
+            String[] stringList = employeeString.split("\":\"|\",\"|\":|,\"|\"|}");
             System.out.println("RECEIVED EMPLOYEE: " + employeeString);
 
-//            if (Arrays.stream(stringList).count() == 17) {
-//                Employee employee = new Employee(
-//                        stringList[2],
-//                        stringList[4],
-//                        stringList[6],
-//                        Integer.parseInt(stringList[8]),
-//                        stringList[10],
-//                        stringList[12],
-//                        Boolean.parseBoolean(stringList[14]),
-//                        null
-//                );
-//                employeeRepository.save(employee);
-//            } else {
-//                Employee employee = new Employee(
-//                        stringList[2],
-//                        stringList[4],
-//                        stringList[6],
-//                        Integer.parseInt(stringList[8]),
-//                        stringList[10],
-//                        stringList[12],
-//                        Boolean.parseBoolean(stringList[14]),
-//                        clientRepository.findById(stringList[18]).get()
-//                );
-//                employeeRepository.save(employee);
-//
-//            }
+            if (Arrays.stream(stringList).count() == 17) {
+                Employee employee = new Employee(
+                        stringList[2],
+                        stringList[4],
+                        stringList[6],
+                        Integer.parseInt(stringList[8]),
+                        stringList[10],
+                        stringList[12],
+                        Boolean.parseBoolean(stringList[14]),
+                        null
+                );
+                employeeRepository.save(employee);
+            } else {
+                Employee employee = new Employee(
+                        stringList[2],
+                        stringList[4],
+                        stringList[6],
+                        Integer.parseInt(stringList[8]),
+                        stringList[10],
+                        stringList[12],
+                        Boolean.parseBoolean(stringList[14]),
+                        clientRepository.findById(stringList[18]).get()
+                );
+                employeeRepository.save(employee);
+                System.out.println("REGISTERED EMPLOYEE: " + employeeString);
+            }
+        }
     }
 }

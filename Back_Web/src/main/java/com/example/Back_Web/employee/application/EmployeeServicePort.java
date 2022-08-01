@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface EmployeeServicePort {
-    public ResponseEntity<EmployeeOutputDto> createEmployeeFunction(EmployeeInputDto employeeInputDto);
+    public ResponseEntity<EmployeeOutputDto> createEmployeeFunction(EmployeeInputDto employeeInputDto, String token);
 
     public ResponseEntity<List<EmployeeOutputDto>> getEmployeeFunction(String token);
 

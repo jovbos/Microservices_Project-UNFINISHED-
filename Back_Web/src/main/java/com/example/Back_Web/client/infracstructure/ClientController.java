@@ -17,7 +17,7 @@ public class ClientController {
     ClientServicePort clientServicePort;
 
     @PostMapping("/api/v0/client")
-    public ResponseEntity<ClientOutputDto> createClient(ClientInputDto clientInputDto) {
+    public ResponseEntity<ClientOutputDto> createClient(@RequestBody ClientInputDto clientInputDto) {
         return clientServicePort.createClientFunction(clientInputDto);
     }
 

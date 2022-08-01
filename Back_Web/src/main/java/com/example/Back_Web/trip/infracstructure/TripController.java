@@ -28,4 +28,26 @@ public class TripController {
             @RequestParam(name = "timeTo", required = false) Time timeTo) {
         return tripServicePort.getCriteriaTrips(destination, dateFrom, dateTo, timeFrom, timeTo);
     }
+
+    // --- Para crear nuevos viajes ---
+    @PostMapping("/api/v0/trip")
+    public ResponseEntity<TripOutputDto> createTrip(@RequestBody TripInputDto tripInputDto,
+                                                    @RequestHeader String token) {
+        return tripServicePort.createTripFunction(tripInputDto, token);
+    }
+
+    // --- Modificar viajes por id ---
+    @PutMapping("/api/v0/trip/{id}")
+    public ResponseEntity<TripOutputDto> updateTrip(@RequestBody TripInputDto tripInputDto,
+                                                    @PathVariable("id") String id,
+                                                    @RequestHeader String token) {
+        return tripServicePort.updateTripFunction(tripInputDto, id, token);
+    }
+
+    // --- Borrar viajes por id ---
+    @DeleteMapping("api/v0/trip/{id}")
+    public ResponseEntity<String> deleteTrip(@PathVariable("id") String id,
+                                             @RequestHeader String token) {
+        return tripServicePort.deleteTripFunction(id, token);
+    }
 }

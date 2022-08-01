@@ -88,4 +88,9 @@ public class BackEmpresaApplication {
 //			kafkaTemplate.send("employeeTopic", new Employee("c72ab7b7-523d-4349-810d-33950dcd9dc4", "admin", "default", 666666666, "admin@hotmail.com", "secret", true, null));
 //		};
 //	}
+
+//	@PostConstruct
+//	public void prueba() {
+//
+//	}
 }

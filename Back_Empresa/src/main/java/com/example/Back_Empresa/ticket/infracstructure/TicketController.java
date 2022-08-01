@@ -40,6 +40,6 @@ public class TicketController {
     // --- Borrar tickets (solo personal autorizado) ---
     @DeleteMapping("api/v0/ticket/{id}")
     public ResponseEntity<String> deleteTicket(@PathVariable("id") String id) {
-        return ticketServicePort.deleteticketFunction(id);
+        return ticketServicePort.deleteTicketFunction(id);
     }
 }

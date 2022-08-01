@@ -15,4 +15,10 @@ public interface TripServicePort {
                                                                 Time timeFrom,
                                                                 Time timeTo);
 
+    ResponseEntity<TripOutputDto> createTripFunction(TripInputDto tripInputDto, String token);
+
+    ResponseEntity<TripOutputDto> updateTripFunction(TripInputDto tripInputDto, String id, String token);
+
+    ResponseEntity<String> deleteTripFunction(String id, String token);
+
 }

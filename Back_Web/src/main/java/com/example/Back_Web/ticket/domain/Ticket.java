@@ -25,7 +25,7 @@ public class Ticket {
     @JoinColumn(name = "Trip_Id")
     private Trip trip;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "Client_Id")
     private Client client;
 

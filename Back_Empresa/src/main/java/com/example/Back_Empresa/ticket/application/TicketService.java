@@ -62,6 +62,8 @@ public class TicketService implements TicketServicePort {
 
     public ResponseEntity<String> createTicket(TicketInputDto ticketInputDto) {
 
+        if (ticketInputDto.getTripId() == null) throw new CustomErrorRequest400("TRIP ID MUST NOT BE NULL");
+
         // --- Se obtiene el email del cliente loggeado ---
         String emailLogged = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         if (emailLogged.equals("anonymousUser")) throw new CustomErrorRequest400("PLEASE LOG IN BEFORE MAKING A RESERVATION");
@@ -136,11 +138,12 @@ public class TicketService implements TicketServicePort {
     }
 
 
-    public ResponseEntity<String> deleteticketFunction(String id) {
+    public ResponseEntity<String> deleteTicketFunction(String id) {
         if (ticketRepository.existsById(id)) {
             ticketRepository.deleteById(id);
 
             String output = "The ticket with ID: " + id + " has been remove.";
+            kafkaTemplate.send("ticketTopic", "Delete ticket " + id);
             return new ResponseEntity<>(output, HttpStatus.OK);
         } else throw new CustomErrorRequest404("TICKET NOT FOUND");
     }

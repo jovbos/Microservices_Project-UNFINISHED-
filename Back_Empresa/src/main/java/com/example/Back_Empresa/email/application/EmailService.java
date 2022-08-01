@@ -11,7 +11,6 @@ import com.example.Back_Empresa.email.infracstructure.dto.EmailOutputDto;
 import com.example.Back_Empresa.ticket.domain.Ticket;
 import com.example.Back_Empresa.ticket.domain.TicketRepository;
 import com.example.Back_Empresa.ticket.infracstructure.dto.TicketOutputDto;
-import com.example.Back_Empresa.trip.domain.TripRepository;
 import com.example.Back_Empresa.trip.infracstructure.dto.TripOutputDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Time;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -61,7 +59,6 @@ public class EmailService implements EmailServicePort{
                 .orElseThrow(() -> new CustomErrorRequest400("TICKET DATA DIDN'T GET SAVED CORRECTLY"));
         Email email = new Email();
         email.setTicket(ticket);
-        System.out.println("AAAAAAAAAAAAA");
         emailRepository.save(email);
 
         mailSender.send(message);

@@ -33,7 +33,7 @@ public class SecurityController {
 
     // --- Se comprueba si existe el usuario en las tablas de cliente y empleado(y si este es admin) ---
     // --- Primero comprobara que sea empleado, ya que puede ser empleado y cliente al mismo tiempo ---
-    @PostMapping("/api/v0/login")
+    @GetMapping("/api/v0/login")
     public String login(@RequestParam("email") String email,
                         @RequestParam("password") String password) {
 

@@ -38,4 +38,9 @@ public class TicketController {
             @RequestHeader String token) {
         return ticketServicePort.getCriteriaTickets(destination, dateFrom, dateTo, timeFrom, timeTo, token);
     }
+
+    @DeleteMapping("api/v0/ticket/{id}")
+    public ResponseEntity<String> deleteTicket(@PathVariable("id") String id, @RequestHeader String token) {
+        return ticketServicePort.deleteTicketFunction(id, token);
+    }
 }
